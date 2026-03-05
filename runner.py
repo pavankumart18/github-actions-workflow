@@ -1,27 +1,34 @@
-import sys
-import subprocess
 import os
-
-task_file = sys.argv[1]
+import requests
+import sys
 
 event = os.getenv("GITHUB_EVENT_NAME")
-print("GitHub Event:", event)
+actor = os.getenv("GITHUB_ACTOR")
+repo = os.getenv("GITHUB_REPOSITORY")
+token = os.getenv("GITHUB_TOKEN")
 
-commands = []
+title = f"Workflow Event: {event}"
 
-with open(task_file, "r") as f:
-    for line in f:
-        line = line.strip()
+body = f"""
+### Repository Event Detected
 
-        if line.startswith("- run:"):
-            cmd = line.replace("- run:", "").strip()
-            commands.append(cmd)
+Event: {event}
+Actor: {actor}
+Repository: {repo}
 
-print("\nCommands found:")
-for c in commands:
-    print(" ", c)
+This issue was automatically created by the workflow.
+"""
 
-print("\n--- Executing ---\n")
+url = f"https://api.github.com/repos/{repo}/issues"
 
-for cmd in commands:
-    subprocess.run(cmd, shell=True)
+headers = {
+    "Authorization": f"Bearer {token}",
+    "Accept": "application/vnd.github+json"
+}
+
+data = {
+    "title": title,
+    "body": body
+}
+
+requests.post(url, headers=headers, json=data)
