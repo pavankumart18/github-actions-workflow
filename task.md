@@ -1,7 +1,7 @@
 # Workflow
 
 steps:
-  - run: echo "Hello Workflow"
+  - run: echo "Listing repository files"
   - run: ls
 
   - run: echo "Counting Python files"
