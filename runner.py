@@ -1,11 +1,14 @@
 import os
 import requests
-import sys
 
 event = os.getenv("GITHUB_EVENT_NAME")
 actor = os.getenv("GITHUB_ACTOR")
 repo = os.getenv("GITHUB_REPOSITORY")
 token = os.getenv("GITHUB_TOKEN")
+
+print("Event:", event)
+print("Actor:", actor)
+print("Repo:", repo)
 
 title = f"Workflow Event: {event}"
 
@@ -31,4 +34,7 @@ data = {
     "body": body
 }
 
-requests.post(url, headers=headers, json=data)
+response = requests.post(url, headers=headers, json=data)
+
+print("Status Code:", response.status_code)
+print("Response:", response.text)
